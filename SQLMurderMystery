@@ -1,0 +1,65 @@
+-- View crime scene report.
+SELECT * 
+FROM crime_scene_report
+WHERE date = 20180115 
+AND city = "SQL City"
+AND type = “murder”
+
+-- Find the witness, Annabel.
+SELECT *
+FROM person
+WHERE name LIKE 'Annabel %';
+
+-- Find the second witness.
+SELECT *
+FROM person
+WHERE address_street_name LIKE 'Northwestern %';  
+
+-- Read the interviews with Annabel and Morty.
+SELECT p.name, p.id, i.transcript
+FROM interview AS i
+JOIN person AS p
+ON person_id = p.id
+WHERE p.id = 16371 
+OR p.id = 14887
+
+-- Narrow down the search using the partial plate number.
+SELECT *
+FROM drivers_license
+WHERE plate_number LIKE '%H42W%';
+
+-- Find the names and ids of the suspects using their license id.
+SELECT *
+FROM person
+WHERE license_id 
+IN (183779, 423327, 664760);
+
+-- Find Get Fit Now member ids for the suspects and Annabel.
+SELECT *
+FROM get_fit_now_member
+WHERE person_id
+IN (16371, 51739, 67318);
+
+-- Check solution: “Congrats, you found the murderer! But wait, there's more... 
+-- If you think you're up for a challenge, try querying the interview transcript of the murderer to find the real villain behind this crime.”
+
+-- Read Jeremy’s interview.
+SELECT *
+FROM interview
+WHERE person_id = 67318 
+
+-- Use this new information to determine the murderer.
+SELECT *, COUNT(DISTINCT date) AS times
+FROM drivers_license AS d
+JOIN person AS p 
+ON p.license_id = d.id 
+JOIN facebook_event_checkin AS f
+ON f.person_id = p.id
+WHERE f.event_name = 'SQL Symphony Concert'
+AND d.height BETWEEN 65 AND 67 
+AND d.hair_color = 'red'
+AND d.gender = 'female'
+AND d.car_make = 'Tesla'
+AND d.car_model = 'Model S';
+
+-- Check solution: “Congrats, you found the brains behind the murder! Everyone in SQL City hails you as the greatest SQL detective of all time.”
